@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-phase-menstrual-bg: #FFF5F5;
+  --color-phase-menstrual-accent: #FEB2B2;
+  --color-phase-menstrual-text: #C53030;
+
+  --color-phase-follicular-bg: #F0FFF4;
+  --color-phase-follicular-accent: #9AE6B4;
+  --color-phase-follicular-text: #276749;
+
+  --color-phase-ovulation-bg: #FFFFF0;
+  --color-phase-ovulation-accent: #FAF089;
+  --color-phase-ovulation-text: #744210;
+
+  --color-phase-luteal-bg: #FAF5FF;
+  --color-phase-luteal-accent: #D6BCFA;
+  --color-phase-luteal-text: #553C9A;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  --font-rose: "Great Vibes", cursive;
+  --font-tales: "Playfair Display", serif;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+:root {
+  font-family: 'Outfit', 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: light;
+  color: #2D3748; /* Confident dark gray */
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* CSS Variables for Dynamic Use in JS - Clear & Soft */
+  --menstrual-bg: #FFF5F5;
+  --menstrual-accent: #FEB2B2;
+  --menstrual-text: #9B2C2C;
+
+  --follicular-bg: #F0FFF4;
+  --follicular-accent: #9AE6B4;
+  --follicular-text: #22543D;
+
+  --ovulation-bg: #FFFFF0;
+  --ovulation-accent: #FAF089;
+  --ovulation-text: #744210;
+
+  --luteal-bg: #FAF5FF;
+  --luteal-accent: #D6BCFA;
+  --luteal-text: #44337A;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.1);
+}

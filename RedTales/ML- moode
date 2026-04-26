@@ -1,0 +1,102 @@
+# Redtails ML Foundation: Technical Architecture Plan
+
+As a Technical Product Architect, I am outlining the transition from a local reflection tracker to an intelligent, personalized cycle-awareness platform.
+
+## 1. Data Architecture (Supabase / PostgreSQL)
+
+We need a relational structure that captures the temporal nature of cycles while allowing for easy aggregation of emotional data.
+
+### Schema Design
+
+#### `users`
+- `id`: UUID (Primary Key)
+- `created_at`: Timestamp
+- `settings`: JSONB (e.g., average cycle length, notifications)
+
+#### `cycles`
+- `id`: UUID (PK)
+- `user_id`: UUID (FK)
+- `start_date`: Date
+- `end_date`: Date (Optional, if tracked)
+- `cycle_length`: Integer (Calculated)
+- `period_duration`: Integer (Calculated)
+- `is_irregular`: Boolean
+
+#### `reflections`
+- `id`: UUID (PK)
+- `user_id`: UUID (FK)
+- `cycle_id`: UUID (FK, optional link to current cycle)
+- `timestamp`: Timestamp
+- `mood`: String (Categorical)
+- `energy_level`: Integer (1-5)
+- `tags`: Text[] (Array of tags)
+- `notes`: Text
+- `phase_id`: String (Categorical: menstrual, follicular, etc.)
+- `cycle_day`: Integer
+
+---
+
+## 2. Feature Engineering Strategy
+
+To make this data "ML-ready," we must transform raw entries into numerical vectors.
+
+### Key Features for Model Training:
+1. **Temporal Features**: `sin/cos` encoding of `cycle_day` to represent its cyclical nature.
+2. **Emotional Vectors**: One-Hot Encoding or Embeddings for `moods` and `tags`.
+3. **Biological Baseline**: Moving average of the last 3-6 cycle lengths and period durations.
+4. **Contextual Aggregates**: Count of specific tags (e.g., "stress", "sleep") over the last 7 days.
+
+---
+
+## 3. Baseline Predictive Models
+
+We will start with **Scikit-learn** for rapid deployment of baseline models before moving to more complex architectures.
+
+| Model Type | Goal | Algorithm Recommendation |
+| :--- | :--- | :--- |
+| **Regression** | Predict next cycle start date | Random Forest Regressor / XGBoost |
+| **Classification** | Predict likely mood for tomorrow | Logistic Regression / SVM (Baseline) |
+| **Clustering** | Identify "User Archetypes" | K-Means (based on mood/energy patterns) |
+| **Time-Series** | Long-term rhythm analysis | Prophet (Facebook) or simple ARIMA |
+
+---
+
+## 4. ML Pipeline & Infrastructure
+
+### Recommended Stack:
+- **Storage**: Supabase (PostgreSQL + Auth).
+- **Backend/API**: FastAPI (Python) hosted on a service like Render or Railway.
+- **ML Engine**: Scikit-learn for baselines; PyTorch/TensorFlow for future LSTMs.
+- **Integration**: React frontend calls FastAPI, which queries Supabase for training data.
+
+---
+
+## 5. Implementation Roadmap
+
+### Phase 1: Structured Collection (Now)
+- Migration of `localStorage` data to Supabase.
+- Implementation of the `getMonthlySummary` logic on the backend for consistency.
+
+### Phase 2: Feature Store & Baselines
+- Create a Python script to generate a CSV/Parquet "Feature Store" from DB exports.
+- Train a simple Random Forest to predict cycle length based on historical averages.
+
+### Phase 3: Real-time Predictions
+- Deploy FastAPI endpoints that return "Tomorrow's Predicted Mood" or "Next Period Date."
+
+---
+
+## Open Questions
+
+> [!IMPORTANT]
+> 1. **Data Privacy**: How should we handle the anonymization of reflection notes for training?
+> 2. **Feedback Loop**: Should we implement a "Was this prediction accurate?" UI element to create a labeled feedback loop for reinforcement?
+
+## Verification Plan
+
+### Automated Tests
+- Schema validation: Ensure all required fields for ML (cycle_day, phase_id) are captured in every reflection.
+- Data export test: Verify a Python script can successfully pull and normalize 1 month of user data.
+
+### Manual Verification
+- Verify the API response time for a mock "prediction" endpoint to ensure it doesn't break the "calm" UI feel.

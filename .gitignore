@@ -1,0 +1,15 @@
+
+# env files
+.env
+backend/.env
+
+# python
+__pycache__/
+*.pyc
+
+# mac
+.DS_Store
+
+# node
+node_modules/
+
